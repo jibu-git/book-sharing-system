@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.orderItem.mapper.TOrderItemMapper">
+    
+    <resultMap type="TOrderItem" id="TOrderItemResult">
+        <result property="orderItemId"    column="order_item_id"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="bookTitle"    column="book_title"    />
+        <result property="bookImage"    column="book_image"    />
+        <result property="bookNum"    column="book_num"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectTOrderItemVo">
+        select order_item_id, order_id, book_id, book_title, book_image, book_num, create_time, remark from t_order_item
+    </sql>
+
+    <select id="selectTOrderItemList" parameterType="TOrderItem" resultMap="TOrderItemResult">
+        <include refid="selectTOrderItemVo"/>
+        <where>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="bookTitle != null  and bookTitle != ''"> and book_title = #{bookTitle}</if>
+            <if test="bookImage != null  and bookImage != ''"> and book_image = #{bookImage}</if>
+            <if test="bookNum != null "> and book_num = #{bookNum}</if>
+        </where>
+    </select>
+
+
+    <select id="selectTOrderItemByOrderItemId" parameterType="Long" resultMap="TOrderItemResult">
+        <include refid="selectTOrderItemVo"/>
+        where order_item_id = #{orderItemId}
+    </select>
+
+    <insert id="insertTOrderItem" parameterType="TOrderItem" useGeneratedKeys="true" keyProperty="orderItemId">
+        insert into t_order_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">order_id,</if>
+            <if test="bookId != null">book_id,</if>
+            <if test="bookTitle != null and bookTitle != ''">book_title,</if>
+            <if test="bookImage != null">book_image,</if>
+            <if test="bookNum != null">book_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">#{orderId},</if>
+            <if test="bookId != null">#{bookId},</if>
+            <if test="bookTitle != null and bookTitle != ''">#{bookTitle},</if>
+            <if test="bookImage != null">#{bookImage},</if>
+            <if test="bookNum != null">#{bookNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTOrderItem" parameterType="TOrderItem">
+        update t_order_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="bookTitle != null and bookTitle != ''">book_title = #{bookTitle},</if>
+            <if test="bookImage != null">book_image = #{bookImage},</if>
+            <if test="bookNum != null">book_num = #{bookNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where order_item_id = #{orderItemId}
+    </update>
+
+    <delete id="deleteTOrderItemByOrderItemId" parameterType="Long">
+        delete from t_order_item where order_item_id = #{orderItemId}
+    </delete>
+
+    <delete id="deleteTOrderItemByOrderItemIds" parameterType="String">
+        delete from t_order_item where order_item_id in 
+        <foreach item="orderItemId" collection="array" open="(" separator="," close=")">
+            #{orderItemId}
+        </foreach>
+    </delete>
+</mapper>

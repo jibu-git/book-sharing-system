@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bookType.mapper.BookTypeMapper">
+    
+    <resultMap type="BookType" id="BookTypeResult">
+        <result property="bookTypeId"    column="book_type_id"    />
+        <result property="bookTypeName"    column="book_type_name"    />
+        <result property="bookTypeSort"    column="book_type_sort"    />
+        <result property="bookTypeStatus"    column="book_type_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBookTypeVo">
+        select book_type_id, book_type_name, book_type_sort, book_type_status, create_time, update_by, update_time, remark from book_type
+    </sql>
+
+    <select id="selectBookTypeList" parameterType="BookType" resultMap="BookTypeResult">
+        <include refid="selectBookTypeVo"/>
+        <where>  
+            <if test="bookTypeName != null  and bookTypeName != ''"> and book_type_name like concat('%', #{bookTypeName}, '%')</if>
+            <if test="bookTypeSort != null "> and book_type_sort = #{bookTypeSort}</if>
+            <if test="bookTypeStatus != null  and bookTypeStatus != ''"> and book_type_status = #{bookTypeStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectBookTypeByBookTypeId" parameterType="Long" resultMap="BookTypeResult">
+        <include refid="selectBookTypeVo"/>
+        where book_type_id = #{bookTypeId}
+    </select>
+
+    <insert id="insertBookType" parameterType="BookType" useGeneratedKeys="true" keyProperty="bookTypeId">
+        insert into book_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookTypeName != null and bookTypeName != ''">book_type_name,</if>
+            <if test="bookTypeSort != null">book_type_sort,</if>
+            <if test="bookTypeStatus != null and bookTypeStatus != ''">book_type_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookTypeName != null and bookTypeName != ''">#{bookTypeName},</if>
+            <if test="bookTypeSort != null">#{bookTypeSort},</if>
+            <if test="bookTypeStatus != null and bookTypeStatus != ''">#{bookTypeStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBookType" parameterType="BookType">
+        update book_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookTypeName != null and bookTypeName != ''">book_type_name = #{bookTypeName},</if>
+            <if test="bookTypeSort != null">book_type_sort = #{bookTypeSort},</if>
+            <if test="bookTypeStatus != null and bookTypeStatus != ''">book_type_status = #{bookTypeStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where book_type_id = #{bookTypeId}
+    </update>
+
+    <delete id="deleteBookTypeByBookTypeId" parameterType="Long">
+        delete from book_type where book_type_id = #{bookTypeId}
+    </delete>
+
+    <delete id="deleteBookTypeByBookTypeIds" parameterType="String">
+        delete from book_type where book_type_id in 
+        <foreach item="bookTypeId" collection="array" open="(" separator="," close=")">
+            #{bookTypeId}
+        </foreach>
+    </delete>
+</mapper>

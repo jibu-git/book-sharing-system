@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bookComment.mapper.BookCommentMapper">
+    
+    <resultMap type="BookComment" id="BookCommentResult">
+        <result property="commentId"    column="comment_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="avatar"    column="avatar"    />
+        <result property="content"    column="content"    />
+        <result property="rootId"    column="root_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="replyToId"    column="reply_to_id"    />
+        <result property="replyToName"    column="reply_to_name"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBookCommentVo">
+        select comment_id, book_id, user_id, user_name, avatar, content, root_id, parent_id, reply_to_id, reply_to_name, like_count, status, del_flag, create_by, create_time, update_by, update_time, remark from book_comment
+    </sql>
+
+    <select id="selectBookCommentList" parameterType="BookComment" resultMap="BookCommentResult">
+        <include refid="selectBookCommentVo"/>
+        <where>  
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="avatar != null  and avatar != ''"> and avatar = #{avatar}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="rootId != null "> and root_id = #{rootId}</if>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="replyToId != null "> and reply_to_id = #{replyToId}</if>
+            <if test="replyToName != null  and replyToName != ''"> and reply_to_name like concat('%', #{replyToName}, '%')</if>
+            <if test="likeCount != null "> and like_count = #{likeCount}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectBookCommentByCommentId" parameterType="Long" resultMap="BookCommentResult">
+        <include refid="selectBookCommentVo"/>
+        where comment_id = #{commentId}
+    </select>
+
+    <insert id="insertBookComment" parameterType="BookComment" useGeneratedKeys="true" keyProperty="commentId">
+        insert into book_comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">book_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="rootId != null">root_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="replyToId != null">reply_to_id,</if>
+            <if test="replyToName != null">reply_to_name,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookId != null">#{bookId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="rootId != null">#{rootId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="replyToId != null">#{replyToId},</if>
+            <if test="replyToName != null">#{replyToName},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBookComment" parameterType="BookComment">
+        update book_comment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="rootId != null">root_id = #{rootId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="replyToId != null">reply_to_id = #{replyToId},</if>
+            <if test="replyToName != null">reply_to_name = #{replyToName},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteBookCommentByCommentId" parameterType="Long">
+        delete from book_comment where comment_id = #{commentId}
+    </delete>
+
+    <delete id="deleteBookCommentByCommentIds" parameterType="String">
+        delete from book_comment
+        where comment_id in
+        <foreach item="commentId" collection="array" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+        or root_id in
+        <foreach item="commentId" collection="array" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+    </delete>
+</mapper>

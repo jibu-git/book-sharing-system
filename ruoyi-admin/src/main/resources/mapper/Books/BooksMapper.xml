@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.books.mapper.BooksMapper">
+
+    <resultMap type="Books" id="BooksResult">
+        <result property="booksId"    column="books_id"    />
+        <result property="booksName"    column="books_name"    />
+        <result property="booksAuthor"    column="books_author"    />
+        <result property="booksPublisher"    column="books_publisher"    />
+        <result property="booksTypeId"    column="books_type_id"    />
+        <result property="totalStock"    column="total_stock"    />
+        <result property="availableStock"    column="available_stock"    />
+        <result property="booksCover"    column="books_cover"    />
+        <result property="booksDescription"    column="books_description"    />
+        <result property="booksStatus"    column="books_status"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="bookPointsValue"    column="book_points_value"    />
+    </resultMap>
+
+    <sql id="selectBooksVo">
+        select books_id, books_name, books_author, books_publisher, books_type_id ,total_stock,available_stock, books_cover, books_description, books_status, user_id, create_time, update_by, update_time, remark,book_points_value from books
+    </sql>
+
+    <select id="selectBooksList" parameterType="Books" resultMap="BooksResult">
+        <include refid="selectBooksVo"/>
+        <where>
+            <if test="booksStatus != null and booksStatus != ''">books_status = #{booksStatus}</if>
+            <if test="booksName != null and booksName != ''">AND books_name = #{booksName}</if>
+            <if test="booksAuthor != null and booksAuthor != ''">AND books_author = #{booksAuthor}</if>
+            <if test="booksPublisher != null and booksPublisher != ''">AND books_publisher = #{booksPublisher}</if>
+            <if test="booksTypeId != null">AND books_type_id = #{booksTypeId}</if>
+            <if test="totalStock != null">AND total_stock = #{totalStock}</if>
+            <if test="availableStock != null">AND available_stock = #{availableStock}</if>
+            <if test="booksCover != null">AND books_cover = #{booksCover}</if>
+            <if test="booksDescription != null">AND books_description = #{booksDescription}</if>
+            <if test="userId != null">AND user_id = #{userId}</if>
+        </where>
+    </select>
+
+    <select id="selectBooksByBooksId" parameterType="Long" resultMap="BooksResult">
+        <include refid="selectBooksVo"/>
+        where books_id = #{booksId}
+    </select>
+
+    <select id="selectBooksListByBooksStatus" parameterType="Books" resultMap="BooksResult">
+        <include refid="selectBooksVo"/>
+        <where>
+            books_status = 0 or books_status = 2
+            <if test="booksTypeId != null and booksTypeId != ''">AND books_type_id = #{booksTypeId}</if>
+            <if test="booksName != null and booksName != ''">AND books_name = #{booksName}</if>
+        </where>
+
+    </select>
+
+    <!--    <select id="selectBooksListByUid" parameterType="Long" resultMap="BooksResult">-->
+<!--        <include refid="selectBooksVo"/>-->
+<!--        where user_id = #{userId}-->
+<!--    </select>-->
+
+    <insert id="insertBooks" parameterType="Books" useGeneratedKeys="true" keyProperty="booksId">
+        insert into books
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="booksName != null and booksName != ''">books_name,</if>
+            <if test="booksAuthor != null and booksAuthor != ''">books_author,</if>
+            <if test="booksPublisher != null and booksPublisher != ''">books_publisher,</if>
+            <if test="booksTypeId != null">books_type_id,</if>
+            <if test="totalStock != null">total_stock,</if>
+            <if test="availableStock != null">available_stock,</if>
+            <if test="booksCover != null">books_cover,</if>
+            <if test="booksDescription != null">books_description,</if>
+            <if test="booksStatus != null and booksStatus != ''">books_status,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="bookPointsValue != null">book_points_value,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="booksName != null and booksName != ''">#{booksName},</if>
+            <if test="booksAuthor != null and booksAuthor != ''">#{booksAuthor},</if>
+            <if test="booksPublisher != null and booksPublisher != ''">#{booksPublisher},</if>
+            <if test="booksTypeId != null">#{booksTypeId},</if>
+            <if test="totalStock != null">#{totalStock},</if>
+            <if test="availableStock != null">#{availableStock},</if>
+            <if test="booksCover != null">#{booksCover},</if>
+            <if test="booksDescription != null">#{booksDescription},</if>
+            <if test="booksStatus != null and booksStatus != ''">#{booksStatus},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="bookPointsValue != null">#{bookPointsValue},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBooks" parameterType="Books">
+        update books
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="booksName != null and booksName != ''">books_name = #{booksName},</if>
+            <if test="booksAuthor != null and booksAuthor != ''">books_author = #{booksAuthor},</if>
+            <if test="booksPublisher != null and booksPublisher != ''">books_publisher = #{booksPublisher},</if>
+            <if test="booksTypeId != null">books_type_id = #{booksTypeId},</if>
+            <if test="totalStock != null">total_stock = #{totalStock},</if>
+            <if test="availableStock != null">available_stock = #{availableStock},</if>
+            <if test="booksCover != null">books_cover = #{booksCover},</if>
+            <if test="booksDescription != null">books_description = #{booksDescription},</if>
+            <if test="booksStatus != null and booksStatus != ''">books_status = #{booksStatus},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="bookPointsValue != null">book_points_value = #{bookPointsValue},</if>
+        </trim>
+        where books_id = #{booksId}
+    </update>
+
+
+
+    <update id="increaseStock">
+        update books
+        set available_stock = available_stock + 1
+        where books_id = #{booksId}
+          and available_stock &lt; total_stock
+    </update>
+
+    <update id="decreaseStock">
+        update books
+        set available_stock = available_stock - 1
+        where books_id = #{booksId}
+          and available_stock > 0
+    </update>
+
+    <delete id="deleteBooksByBooksId" parameterType="Long">
+        delete from books where books_id = #{booksId}
+    </delete>
+
+    <delete id="deleteBooksByBooksIds" parameterType="String">
+        delete from books where books_id in 
+        <foreach item="booksId" collection="array" open="(" separator="," close=")">
+            #{booksId}
+        </foreach>
+    </delete>
+</mapper>

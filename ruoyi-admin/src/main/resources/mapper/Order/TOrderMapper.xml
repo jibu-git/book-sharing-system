@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.Order.mapper.TOrderMapper">
+
+    <resultMap type="TOrder" id="TOrderResult">
+        <result property="orderId"    column="order_id"    />
+        <result property="borrowerId"    column="borrower_id"    />
+        <result property="ownerId"    column="owner_id"    />
+        <result property="orderRecvName"    column="order_recv_name"    />
+        <result property="orderRecvPhone"    column="order_recv_phone"    />
+        <result property="orderRecvProvince"    column="order_recv_province"    />
+        <result property="orderRecvCity"    column="order_recv_city"    />
+        <result property="orderRecvAddress"    column="order_recv_address"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="orderTime"    column="order_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="consumePoints"    column="consume_points"    />
+        <result property="pledgePoints"    column="pledge_points"    />
+        <result property="rewardPoints"    column="reward_points"    />
+    </resultMap>
+
+    <sql id="selectTOrderVo">
+        select order_id, borrower_id, owner_id, order_recv_name, order_recv_phone, order_recv_province, order_recv_city, order_recv_address, order_status, order_time, create_time, update_time, remark,consume_points,pledge_points,reward_points from t_order
+    </sql>
+
+    <select id="selectTOrderList" parameterType="TOrder" resultMap="TOrderResult">
+        <include refid="selectTOrderVo"/>
+        <where>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+            <if test="borrowerId != null "> and borrower_id = #{borrowerId}</if>
+            <if test="ownerId != null "> and owner_id = #{ownerId}</if>
+            <if test="orderRecvName != null  and orderRecvName != ''"> and order_recv_name like concat('%', #{orderRecvName}, '%')</if>
+            <if test="orderRecvPhone != null  and orderRecvPhone != ''"> and order_recv_phone = #{orderRecvPhone}</if>
+            <if test="orderRecvProvince != null  and orderRecvProvince != ''"> and order_recv_province = #{orderRecvProvince}</if>
+            <if test="orderRecvCity != null  and orderRecvCity != ''"> and order_recv_city = #{orderRecvCity}</if>
+            <if test="orderRecvAddress != null  and orderRecvAddress != ''"> and order_recv_address = #{orderRecvAddress}</if>
+            <if test="orderStatus != null  and orderStatus != ''"> and order_status = #{orderStatus}</if>
+            <if test="orderTime != null "> and order_time = #{orderTime}</if>
+        </where>
+    </select>
+
+    <select id="selectTOrderByOrderId" parameterType="Long" resultMap="TOrderResult">
+        <include refid="selectTOrderVo"/>
+        where order_id = #{orderId}
+    </select>
+
+    <select id="selectOrderIdsByUserId" parameterType="Long" resultType="java.lang.Long">
+        select order_id from t_order
+        where borrower_id = #{userId} or owner_id = #{userId}
+    </select>
+
+    <select id="selectOtherPendingOrderIdsByBookId" resultType="Long">
+        SELECT DISTINCT o.order_id
+        FROM t_order o
+                 LEFT JOIN t_order_item i ON o.order_id = i.order_id
+        WHERE i.book_id = #{bookId}
+          AND o.order_status = '0'
+          AND o.order_id != #{excludeOrderId}
+    </select>
+
+    <select id="checkUserHasBookOrder" resultType="Integer">
+        SELECT count(1)
+        FROM t_order o
+                 LEFT JOIN t_order_item i ON o.order_id = i.order_id
+        WHERE o.borrower_id = #{borrowerId}
+          AND i.book_id = #{bookId}
+          AND o.order_status IN ('0', '1', '2')
+    </select>
+
+    <select id="selectPendingOrdersByBookId" resultMap="TOrderResult">
+        SELECT DISTINCT
+            o.order_id,
+            o.borrower_id,
+            o.owner_id,
+            o.order_status,
+            o.create_time
+        FROM t_order o
+                 LEFT JOIN t_order_item i ON o.order_id = i.order_id
+        WHERE i.book_id = #{bookId}
+          AND o.order_status = '1'
+          AND o.order_id != #{excludeOrderId}
+    </select>
+
+    <insert id="insertTOrder" parameterType="TOrder" useGeneratedKeys="true" keyProperty="orderId">
+        insert into t_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="borrowerId != null">borrower_id,</if>
+            <if test="ownerId != null">owner_id,</if>
+            <if test="orderRecvName != null and orderRecvName != ''">order_recv_name,</if>
+            <if test="orderRecvPhone != null">order_recv_phone,</if>
+            <if test="orderRecvProvince != null">order_recv_province,</if>
+            <if test="orderRecvCity != null">order_recv_city,</if>
+            <if test="orderRecvAddress != null">order_recv_address,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="orderTime != null">order_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="consumePoints != null">consume_points,</if>
+            <if test="pledgePoints != null">pledge_points,</if>
+            <if test="rewardPoints != null">reward_points,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="borrowerId != null">#{borrowerId},</if>
+            <if test="ownerId != null">#{ownerId},</if>
+            <if test="orderRecvName != null and orderRecvName != ''">#{orderRecvName},</if>
+            <if test="orderRecvPhone != null">#{orderRecvPhone},</if>
+            <if test="orderRecvProvince != null">#{orderRecvProvince},</if>
+            <if test="orderRecvCity != null">#{orderRecvCity},</if>
+            <if test="orderRecvAddress != null">#{orderRecvAddress},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="orderTime != null">#{orderTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="consumePoints != null">#{consumePoints},</if>
+            <if test="pledgePoints != null">#{pledgePoints},</if>
+            <if test="rewardPoints != null">#{rewardPoints},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTOrder" parameterType="TOrder">
+        update t_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="borrowerId != null">borrower_id = #{borrowerId},</if>
+            <if test="ownerId != null">owner_id = #{ownerId},</if>
+            <if test="orderRecvName != null and orderRecvName != ''">order_recv_name = #{orderRecvName},</if>
+            <if test="orderRecvPhone != null">order_recv_phone = #{orderRecvPhone},</if>
+            <if test="orderRecvProvince != null">order_recv_province = #{orderRecvProvince},</if>
+            <if test="orderRecvCity != null">order_recv_city = #{orderRecvCity},</if>
+            <if test="orderRecvAddress != null">order_recv_address = #{orderRecvAddress},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="orderTime != null">order_time = #{orderTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="consumePoints != null">consume_points = #{consumePoints},</if>
+            <if test="pledgePoints != null">pledge_points = #{pledgePoints},</if>
+            <if test="rewardPoints != null">reward_points = #{rewardPoints},</if>
+        </trim>
+        where order_id = #{orderId}
+    </update>
+
+    <update id="updateOrderStatusBatch">
+        update t_order
+        set order_status = #{status},
+        remark = #{remark},
+        update_time = sysdate()
+        where order_id in
+        <foreach collection="orderIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <delete id="deleteTOrderByOrderId" parameterType="Long">
+        delete from t_order where order_id = #{orderId}
+    </delete>
+
+    <delete id="deleteTOrderByOrderIds" parameterType="String">
+        delete from t_order where order_id in
+        <foreach item="orderId" collection="array" open="(" separator="," close=")">
+            #{orderId}
+        </foreach>
+    </delete>
+</mapper>

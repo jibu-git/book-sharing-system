@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.tAddress.mapper.TAddressMapper">
+    
+    <resultMap type="TAddress" id="TAddressResult">
+        <result property="aid"    column="aid"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="provinceName"    column="province_name"    />
+        <result property="cityName"    column="city_name"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="tag"    column="tag"    />
+        <result property="isDefault"    column="is_default"    />
+        <result property="createdTime"    column="created_time"    />
+        <result property="modifiedTime"    column="modified_time"    />
+    </resultMap>
+
+    <sql id="selectTAddressVo">
+        select aid, user_id, name, province_name, city_name, address, phone, tag, is_default, created_time, modified_time from t_address
+    </sql>
+
+    <select id="selectTAddressList" parameterType="TAddress" resultMap="TAddressResult">
+        <include refid="selectTAddressVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="provinceName != null  and provinceName != ''"> and province_name like concat('%', #{provinceName}, '%')</if>
+            <if test="cityName != null  and cityName != ''"> and city_name like concat('%', #{cityName}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="tag != null  and tag != ''"> and tag = #{tag}</if>
+            <if test="isDefault != null "> and is_default = #{isDefault}</if>
+            <if test="createdTime != null "> and created_time = #{createdTime}</if>
+            <if test="modifiedTime != null "> and modified_time = #{modifiedTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectTAddressByAid" parameterType="Long" resultMap="TAddressResult">
+        <include refid="selectTAddressVo"/>
+        where aid = #{aid}
+    </select>
+
+    <insert id="insertTAddress" parameterType="TAddress" useGeneratedKeys="true" keyProperty="aid">
+        insert into t_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="provinceName != null">province_name,</if>
+            <if test="cityName != null">city_name,</if>
+            <if test="address != null">address,</if>
+            <if test="phone != null">phone,</if>
+            <if test="tag != null">tag,</if>
+            <if test="isDefault != null">is_default,</if>
+            <if test="createdTime != null">created_time,</if>
+            <if test="modifiedTime != null">modified_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="provinceName != null">#{provinceName},</if>
+            <if test="cityName != null">#{cityName},</if>
+            <if test="address != null">#{address},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="tag != null">#{tag},</if>
+            <if test="isDefault != null">#{isDefault},</if>
+            <if test="createdTime != null">#{createdTime},</if>
+            <if test="modifiedTime != null">#{modifiedTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTAddress" parameterType="TAddress">
+        update t_address
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="provinceName != null">province_name = #{provinceName},</if>
+            <if test="cityName != null">city_name = #{cityName},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="tag != null">tag = #{tag},</if>
+            <if test="isDefault != null">is_default = #{isDefault},</if>
+            <if test="createdTime != null">created_time = #{createdTime},</if>
+            <if test="modifiedTime != null">modified_time = #{modifiedTime},</if>
+        </trim>
+        where aid = #{aid}
+    </update>
+
+    <delete id="deleteTAddressByAid" parameterType="Long">
+        delete from t_address where aid = #{aid}
+    </delete>
+
+    <delete id="deleteTAddressByAids" parameterType="String">
+        delete from t_address where aid in 
+        <foreach item="aid" collection="array" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.pointsRecord.mapper.PointsRecordMapper">
+    
+    <resultMap type="PointsRecord" id="PointsRecordResult">
+        <result property="recordId"    column="record_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tradeType"    column="trade_type"    />
+        <result property="amount"    column="amount"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectPointsRecordVo">
+        select record_id, user_id, trade_type, amount, order_id, remark, create_by, create_time from points_record
+    </sql>
+
+    <select id="selectPointsRecordList" parameterType="PointsRecord" resultMap="PointsRecordResult">
+        <include refid="selectPointsRecordVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="tradeType != null "> and trade_type = #{tradeType}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="orderId != null "> and order_id = #{orderId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPointsRecordByRecordId" parameterType="Long" resultMap="PointsRecordResult">
+        <include refid="selectPointsRecordVo"/>
+        where record_id = #{recordId}
+    </select>
+
+    <insert id="insertPointsRecord" parameterType="PointsRecord" useGeneratedKeys="true" keyProperty="recordId">
+        insert into points_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="tradeType != null">trade_type,</if>
+            <if test="amount != null">amount,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="tradeType != null">#{tradeType},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePointsRecord" parameterType="PointsRecord">
+        update points_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="tradeType != null">trade_type = #{tradeType},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deletePointsRecordByRecordId" parameterType="Long">
+        delete from points_record where record_id = #{recordId}
+    </delete>
+
+    <delete id="deletePointsRecordByRecordIds" parameterType="String">
+        delete from points_record where record_id in 
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+</mapper>
