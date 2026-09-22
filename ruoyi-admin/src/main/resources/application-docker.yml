@@ -1,0 +1,13 @@
+# Docker 部署专用配置（--spring.profiles.active=docker 时生效）
+# 作用：数据库/Redis 走容器服务名，上传路径用 Linux 路径
+spring:
+  datasource:
+    druid:
+      master:
+        url: jdbc:mysql://mysql:3306/ry?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+  redis:
+    host: redis
+    port: 6379
+
+ruoyi:
+  profile: /home/ruoyi/uploadPath
